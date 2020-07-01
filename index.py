@@ -1,3 +1,4 @@
+#pip3 install pandas
 import pandas as pd
 
 from ast import literal_eval
@@ -7,7 +8,7 @@ df = pd.read_csv(filename)
 
 
 # This function serves to
-# a) convert the strings listing authors' names into a Python-readable lists
+# a) convert the "authors" col strings into Python-readable lists
 # b) remove each author's first name
 def lastname_producer(names):
 
@@ -30,8 +31,8 @@ def lastname_producer(names):
     return lastnames
 
 #creates new column, "last_names"
-#each row is populated w/ a list containing the lowercased last names of every author
-#ex. [levendusky, pope, jackman] or [steinberger]
+#each row is populated w/ a list containing the last names of every author
+#ex. [levendusky, pope, jackman]
 df['last_names'] = df.apply(lambda row: lastname_producer(row['authors']), axis=1)
 
 #a new row is created for each individual last name
@@ -42,13 +43,13 @@ df['last_names'] = df.apply(lambda row: lastname_producer(row['authors']), axis=
 # row index 0: [jackman]
 df = df.explode("last_names")
 
-# This function serves to return a truncated text.
+# This function returns a truncated text.
 # If the author's name appears in last 300 characters of a given text,
 # then the sentence containing the author's name is removed.
 # The sentences following the removed sentence are also removed.
 def trunc_name(x):
 
-    #alter this variable if you want to expand how many characters are checked
+    # Alter this variable if you want to expand how many characters are checked
     nbCharacters = 300
 
     if ((str(x['last_names'])) not in (x['text'][(-1 * nbCharacters):])):
