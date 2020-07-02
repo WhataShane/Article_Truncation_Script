@@ -4,7 +4,9 @@ import pandas as pd
 from ast import literal_eval
 
 filename = "./articcle_text_authors.csv"
-df = pd.read_csv(filename)
+df = pd.read_csv(filename, nrows=5000)
+
+
 
 
 # This function serves to
@@ -52,7 +54,7 @@ def trunc_name(x):
     # Alter this variable if you want to expand how many characters are checked
     nbCharacters = 300
 
-    if ((str(x['last_names'])) not in (x['text'][(-1 * nbCharacters):])):
+    if ((str(x['last_names'])) not in (x['text'][(-1 * nbCharacters):])) and ("cknowledg") not in (x['text'][(-1 * nbCharacters):]):
         return x['text']
 
     else:
@@ -60,7 +62,13 @@ def trunc_name(x):
         #        if string is less than or equal to 300 characters, it selects the whole string.
         #
         #.find   gets index of given word in last 300 characters
-        index = x['text'][(-1 * nbCharacters):].find(str(x['last_names']))
+        indexOne = x['text'][(-1 * nbCharacters):].find(str(x['last_names']))
+        indexTwo = x['text'][(-1 * nbCharacters):].find("cknowledg")
+
+        if (indexOne > indexTwo):
+            index = indexOne
+        else:
+            index = indexTwo
 
         #if article has more than 300 characters, displace the index by the article's length
         if (len(x['text']) > nbCharacters):
@@ -80,7 +88,6 @@ def trunc_name(x):
 #applying the above function
 df['trunc_text'] = df.apply(lambda row: trunc_name(row), axis=1)
 
-
 #Debugging tool to determine which articles needed to be altered
 #mask = ([ (str(a) in b[-300:]) for a,b in zip(df["last_names"], df["text"])])
 #masktwo = ([ ("cknowledg" in b[-300:]) for b in df["text"]])
@@ -96,5 +103,8 @@ def shortest_agg(s):
 df = df.groupby("file_name").agg(shortest_agg)
 #------------
 
+maskTwo = ([ ("cknowledg" in b[-300:]) for b in df["text"]])
+print (df.loc[maskTwo])
+
 #Export to new CSV
-df.to_csv('final.csv')
+df.to_csv('final2.csv')
