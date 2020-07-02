@@ -4,7 +4,8 @@ import pandas as pd
 from ast import literal_eval
 
 filename = "./articcle_text_authors.csv"
-df = pd.read_csv(filename, nrows=5000)
+#to chunk data, use param nrows=5000
+df = pd.read_csv(filename)
 
 
 
@@ -102,9 +103,6 @@ def shortest_agg(s):
     return sorted(lst, key = lambda x: len(x))[0]
 df = df.groupby("file_name").agg(shortest_agg)
 #------------
-
-maskTwo = ([ ("cknowledg" in b[-300:]) for b in df["text"]])
-print (df.loc[maskTwo])
 
 #Export to new CSV
 df.to_csv('final2.csv')
